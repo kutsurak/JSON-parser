@@ -110,7 +110,11 @@ std::pair<string, Value*> Parser::jPair() {
   }
   Value *val = jValue();
 
-  std::pair<std::string, Value*> ret(str->toJSON(0, false), val);
+  std::string key = str->toJSON(0, false);
+  // Strip the first and last double quote from the key
+  // for easier searching in the map.
+  key = key.substr(key.find_first_of("\"") + 1, key.find_last_of("\"") - 1);
+  std::pair<std::string, Value*> ret(key, val);
   delete str;
   return ret;
 }
