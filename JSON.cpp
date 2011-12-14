@@ -57,7 +57,7 @@ std::string Members::toJSON(int spc, bool skip_initial) const {
   typedef std::map<std::string, Value*>::const_iterator map_iterator;
   for (map_iterator it = pairs_.begin();
        it != pairs_.end(); it++) {
-    str += spcs + "\"" + it->first + "\" : " + it->second->toJSON(spc, true);
+    str += spcs + it->first + " : " + it->second->toJSON(spc, true);
     if (i < sz - 1) {
       str += ",\n";
       i++;

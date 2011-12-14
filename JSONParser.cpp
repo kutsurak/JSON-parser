@@ -251,7 +251,7 @@ Value *Parser::jString() {
   }
 
   Value *ret = new Value();
-  ret->SetValue(str);
+  ret->SetValue("\"" + str + "\"");
 
   return ret;
 }
