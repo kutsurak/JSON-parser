@@ -11,7 +11,8 @@ defined in JSON.h and JSON.cpp. Currently the JSON objects are in the
 simplest possible form I could make them work. For instance the JSON
 members are not implemented as a map, although it makes a lot of sense
 to do so, but as a linked list. Probably the next thing that will
-happen will be this change.
+happen will be this change. I should also mention that simple values
+(strings, numbers, literals) are all represented by strings.
 
 For more information about JSON take a look at: http://www.json.org
 
@@ -27,10 +28,12 @@ $ cd build
 $ cmake ../
 $ make
 
-This sequence of commands will produce a static library
-(libjson_parser.a) as well as an example program (json_parser_example)
-that takes one JSON file as argument and pretty prints the JSON data
-in it.
+If the variable CMAKE_BUILD_TYPE is set to "Debug" this sequence of
+commands will produce a static library (libjson_parser.a) as well as
+an example program (json_parser_example) that takes one JSON file as
+argument and pretty prints the JSON data in it, with debug symbols (at
+least for gcc). If not then it will produce a shared library and it
+will be optimized.
 
 In order to compile it you just need a recent C++ compiler. The code
 does not use any fancy C++ features, so any compiler conforming to the
