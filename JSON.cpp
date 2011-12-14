@@ -22,8 +22,8 @@
 
 using std::string;
 
-namespace json {
-std::string Object::ToJSON(int spc, bool skip_initial) const {
+namespace json_parser {
+std::string Object::toJSON(int spc, bool skip_initial) const {
   std::string str;
   std::string spcs;
 
@@ -36,7 +36,7 @@ std::string Object::ToJSON(int spc, bool skip_initial) const {
     } else {
       str += spcs + "{\n";
     }
-    str += members_->ToJSON(spc + 1, false);
+    str += members_->toJSON(spc + 1, false);
     str += spcs + "}";
   } else {
     str = "{}";
@@ -44,14 +44,20 @@ std::string Object::ToJSON(int spc, bool skip_initial) const {
   return str;
 }
 
-std::string Members::ToJSON(int spc, bool skip_initial) const {
+std::string Members::toJSON(int spc, bool skip_initial) const {
   std::string str;
+  std::string spcs;
+
+  for (int i = 0; i < spc; i++) {
+    spcs += " ";
+  }
 
   unsigned int sz = pairs_.size();
   unsigned int i = 0;
-  for (std::list<Pair *>::const_iterator it = pairs_.begin();
+  typedef std::map<std::string, Value*>::const_iterator map_iterator;
+  for (map_iterator it = pairs_.begin();
        it != pairs_.end(); it++) {
-    str += (*it)->ToJSON(spc, false);
+    str += spcs + "\"" + it->first + "\" : " + it->second->toJSON(spc, true);
     if (i < sz - 1) {
       str += ",\n";
       i++;
@@ -63,12 +69,12 @@ std::string Members::ToJSON(int spc, bool skip_initial) const {
   return str;
 }
 
-std::string Pair::ToJSON(int spc, bool skip_initial) const {
-  std::string str = key_->ToJSON(spc, false) + " : " + value_->ToJSON(spc, true);
+std::string Pair::toJSON(int spc, bool skip_initial) const {
+  std::string str = key_->toJSON(spc, false) + " : " + value_->toJSON(spc, true);
   return str;
 }
 
-std::string Array::ToJSON(int spc, bool skip_initial) const {
+std::string Array::toJSON(int spc, bool skip_initial) const {
   std::string spcs;
   for (int i = 0; i < spc; i++) {
     spcs += " ";
@@ -79,19 +85,19 @@ std::string Array::ToJSON(int spc, bool skip_initial) const {
   } else {
     str += spcs + "[\n";
   }
-  str += elems_->ToJSON(spc + 1, false);
+  str += elems_->toJSON(spc + 1, false);
   str += spcs + "]";
   return str;
 }
 
-std::string Elements::ToJSON(int spc, bool skip_initial) const {
+std::string Elements::toJSON(int spc, bool skip_initial) const {
   std::string str;
 
   unsigned int sz = values_.size();
   unsigned int i = 0;
   for (std::list<Value *>::const_iterator it = values_.begin();
        it != values_.end(); it++) {
-    str += (*it)->ToJSON(spc, false);
+    str += (*it)->toJSON(spc, false);
     if (i < sz - 1) {
       str += ",\n";
       i++;
@@ -103,7 +109,7 @@ std::string Elements::ToJSON(int spc, bool skip_initial) const {
   return str;
 }
 
-std::string Value::ToJSON(int spc, bool skip_initial) const {
+std::string Value::toJSON(int spc, bool skip_initial) const {
   string spcs;
   for (int i = 0; i < spc; i++) {
     spcs += " ";

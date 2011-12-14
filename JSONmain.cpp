@@ -30,17 +30,17 @@ int main(int argc, char **argv) {
   }
 
   std::ifstream ifs(argv[1]);
-  json::Parser parser(&ifs);
+  json_parser::Parser parser(&ifs);
 
   try{
-    json::Value *val = parser.jValue();
+    json_parser::Value *val = parser.jValue();
 
     // Pretty printing
-    std::string str = val->ToJSON(0, false);
+    std::string str = val->toJSON(0, false);
     std::cout << str << std::endl;
 
     delete val;
-  } catch (json::ParseError e) {
+  } catch (json_parser::ParseError e) {
     std::cerr << "Oops, the file you gave me does not contain JSON data:" << std::endl;
     std::cerr << e.what() << std::endl;
   }

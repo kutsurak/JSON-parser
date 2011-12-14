@@ -22,7 +22,7 @@
 
 #include "global.h"
 
-namespace json {
+namespace json_parser {
 
 class ParseError : public std::exception {
  public:
@@ -59,7 +59,7 @@ class Parser {
   /// Parse the contents of a JSON object
   Members *jMembers();
   /// Parse a JSON key value pair
-  Pair *jPair();
+  std::pair<std::string, Value*> jPair();
   /// Parse a JSON array
   Array *jArray();
   /// Parse the contents of a JSON array

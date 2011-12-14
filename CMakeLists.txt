@@ -19,10 +19,10 @@ project(json_parser)
 
 
 if (CMAKE_BUILD_TYPE STREQUAL Debug)
-  set(BUILD_SHARED_LIBS False)
+  #set(BUILD_SHARED_LIBS False)
   set(CMAKE_CXX_FLAGS "-Wall -g")
 else ()
-  set(BUILD_SHARED_LIBS True)
+  #set(BUILD_SHARED_LIBS True)
   set(CMAKE_CXX_FLAGS "-Wall -O2")
 endif ()
 

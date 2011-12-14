@@ -18,11 +18,13 @@
 #ifndef JSON_H_
 #define JSON_H_
 
-#include "global.h"
-#include <string>
 #include <list>
+#include <map>
+#include <string>
 
-namespace json {
+#include "global.h"
+
+namespace json_parser {
 
 /// Represents a simple JSON value (number, string, literal) using a
 /// string.
@@ -39,7 +41,7 @@ class Value {
    * @param skip_initial If true, it does not print the initial spaces
    * before the data.
    */
-  virtual std::string ToJSON(int spc, bool skip_initial) const;
+  virtual std::string toJSON(int spc, bool skip_initial) const;
   virtual ~Value() {}
  private:
   std::string value_;
@@ -50,7 +52,7 @@ class Value {
 class Elements {
  public:
   Elements(): values_() {}
-  void PushFront(Value *val) {
+  void insert(Value *val) {
     values_.push_front(val);
   }
   /**
@@ -59,7 +61,7 @@ class Elements {
    * @param skip_initial If true, it does not print the initial spaces
    * before the data.
    */
-  std::string ToJSON(int spc, bool skip_initial) const;
+  std::string toJSON(int spc, bool skip_initial) const;
   
   ~Elements() {
     for(std::list<Value *>::iterator it = values_.begin();
@@ -84,7 +86,7 @@ class Array : public Value{
    * @param skip_initial If true, it does not print the initial spaces
    * before the data.
    */
-  std::string ToJSON(int spc, bool skip_initial) const;
+  std::string toJSON(int spc, bool skip_initial) const;
   
   ~Array() {
     delete elems_;
@@ -104,7 +106,7 @@ class Pair {
    * @param skip_initial If true, it does not print the initial spaces
    * before the data.
    */
-  std::string ToJSON(int spc, bool skip_initial) const;
+  std::string toJSON(int spc, bool skip_initial) const;
   
   ~Pair() {
     delete key_;
@@ -120,8 +122,8 @@ class Pair {
 class Members {
  public:
   Members(): pairs_() {}
-  void PushFront(Pair *p) {
-    pairs_.push_front(p);
+  void insert(std::pair<std::string, Value *> p) {
+    pairs_.insert(p);
   }
   /**
    * Performs pretty printing.
@@ -129,16 +131,17 @@ class Members {
    * @param skip_initial If true, it does not print the initial spaces
    * before the data.
    */
-  std::string ToJSON(int spc, bool skip_initial) const;
+  std::string toJSON(int spc, bool skip_initial) const;
   
   ~Members() {
-    for (std::list<Pair *>::iterator it = pairs_.begin();
+    typedef std::map<std::string, Value*>::iterator map_iterator;
+    for (map_iterator it = pairs_.begin();
          it != pairs_.end(); it++) {
-      delete *it;
+      delete it->second;
     }
   }
  private:
-  std::list<Pair *> pairs_;
+  std::map<std::string, Value*> pairs_;
   DISALLOW_COPY_AND_ASSIGN(Members);
 };
 
@@ -154,7 +157,7 @@ class Object : public Value {
    * @param skip_initial If true, it does not print the initial spaces
    * before the data.
    */
-  std::string ToJSON(int spc, bool skip_initial) const;
+  std::string toJSON(int spc, bool skip_initial) const;
   ~Object() {
     delete members_;
   }

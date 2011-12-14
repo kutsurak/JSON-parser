@@ -26,7 +26,7 @@
 using std::string;
 using std::stringstream;
 
-namespace json {
+namespace json_parser {
 
 void Parser::skipWhitespace() {
   char c;
@@ -79,7 +79,7 @@ Object *Parser::jObject() {
 Members *Parser::jMembers() {
   skipWhitespace();
   // Read a pair from the stream
-  Pair *pair = jPair();
+  std::pair<std::string, Value*> pair = jPair();
   Members *ret;
   char c = readCharacter();
   // If the next char is ',' we have more pairs to read
@@ -92,7 +92,7 @@ Members *Parser::jMembers() {
   // Because we are working recursivelly we need to put the pair we
   // read in the front of the member list in order to maintain the
   // order.
-  ret->PushFront(pair);
+  ret->insert(pair);
 
   return ret;
 }
@@ -101,7 +101,7 @@ Members *Parser::jMembers() {
  * A pair is a string followed by the character ':' followed by a JSON
  * value.
  */
-Pair *Parser::jPair() {
+std::pair<string, Value*> Parser::jPair() {
   skipWhitespace();
   Value *str = jString();
   char c = readCharacter();
@@ -110,7 +110,9 @@ Pair *Parser::jPair() {
   }
   Value *val = jValue();
 
-  return new Pair(str, val);
+  std::pair<std::string, Value*> ret(str->toJSON(0, false), val);
+  delete str;
+  return ret;
 }
 
 /**
@@ -153,10 +155,9 @@ Elements *Parser::jElements() {
     ret = new Elements();
   }
 
-  ret->PushFront(val);
+  ret->insert(val);
   return ret;
 }
-
 
 /**
  * A JSON value is either a JSON Object, a JSON array, a JSON string,
@@ -250,7 +251,7 @@ Value *Parser::jString() {
   }
 
   Value *ret = new Value();
-  ret->SetValue("\"" + str + "\"");
+  ret->SetValue(str);
 
   return ret;
 }
