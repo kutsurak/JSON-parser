@@ -164,7 +164,7 @@ Elements *Parser::jElements() {
  */
 Value *Parser::jValue() {
   skipWhitespace();
-  Value *ret;
+  Value *ret = NULL;
 
   char c = readCharacter();
   char true_buf[] = "rue";
